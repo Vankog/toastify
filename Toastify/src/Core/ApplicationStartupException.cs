@@ -11,9 +11,7 @@ namespace Toastify.Core
 
         private static string CreateMessage()
         {
-            var nl = Environment.NewLine;
-
-            // Touching Spotify.Instance forces instance creation, but it fails if called too early
+            // Touching Spotify.Instance forces instance creation, but it fails if called too early. Therefore, a try is needed.
             try
             {
                 var tmp = Spotify.Instance;
@@ -40,7 +38,7 @@ namespace Toastify.Core
                 messages.Add("--  has Track: " + (status.Track != null));
             }
 
-            return string.Join(nl, messages);
+            return string.Join(Environment.NewLine, messages);
         }
     }
 }
