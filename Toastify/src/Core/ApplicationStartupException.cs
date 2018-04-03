@@ -12,24 +12,32 @@ namespace Toastify.Core
         private static string CreateMessage()
         {
             var nl = Environment.NewLine;
-            if (Spotify.Instance == null)
-                return string.Join(nl, "No Spotify instance created.");
+
+            // Touching Spotify.Instance forces instance creation, but it fails if called too early
+            try
+            {
+                var tmp = Spotify.Instance;
+            }
+            catch (NullReferenceException)
+            {
+                return "Spotify instance status: not yet created.";
+            }
 
             List<string> messages = new List<string>();
-            messages.Add("Spotify is running: " + Spotify.Instance.IsRunning);
+            messages.Add("Spotify instance running status: " + Spotify.Instance.IsRunning);
 
             var status = Spotify.Instance.Status;
-            messages.Add("Status: ");
+            messages.Add("Spotify instance Status: ");
             if (status == null)
                 messages.Add("null");
             else
             {
                 // TODO: add a status.toString() to Spotify API and replace this:
-                messages.Add(nl + "-- Online: " + status.Online);
-                messages.Add(nl + "-- Running: " + status.Running);
-                messages.Add(nl + "-- Version: " + status.Version);
-                messages.Add(nl + "-- Client Version: " + status.ClientVersion);
-                messages.Add(nl + "--  has Track: " + (status.Track != null));
+                messages.Add("-- Online: " + status.Online);
+                messages.Add("-- Running: " + status.Running);
+                messages.Add("-- Version: " + status.Version);
+                messages.Add("-- Client Version: " + status.ClientVersion);
+                messages.Add("--  has Track: " + (status.Track != null));
             }
 
             return string.Join(nl, messages);
